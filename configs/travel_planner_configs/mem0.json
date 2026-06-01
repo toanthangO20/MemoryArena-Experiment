@@ -1,0 +1,34 @@
+{
+  "task_name": "travel_planner",
+
+  "agent": {
+    "model_name": "gpt-5-mini",
+    "backend": "openai",
+    "api_key": "<OPENAI_API_KEY>",
+    "base_url": ""
+  },
+
+  "memory": {
+    "use_step_memory": false,
+    "memory_system_name": "mem0",
+    "server_url": "http://0.0.0.0:8000"
+  },
+
+  "env": {
+    "env_name": "travel_planner",
+    "env_server_url": "http://0.0.0.0:8005",
+    "env_config": {
+      "judgement_mode": "none"
+    }
+  },
+
+  "task_specific": {
+    "max_steps": 30
+  },
+
+  "output": {
+    "output_dir": "results/travel/mem0/gpt-5-mini",
+    "log_dir": "results/travel/logs",
+    "global_csv": "results/travel/results.csv"
+  }
+}

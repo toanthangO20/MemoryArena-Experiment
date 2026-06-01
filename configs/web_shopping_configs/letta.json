@@ -1,0 +1,57 @@
+{
+  "task_name": "shopping",
+
+  "agent": {
+    "model_name": "gpt-5-mini",
+    "temperature": 1.0,
+    "max_tokens": 4096,
+    "backend": "openai",
+    "api_key": "",
+    "base_url": ""
+  },
+
+  "memory": {
+    "use_step_memory": false,
+    "memory_system_name": "letta",
+    "server_url": "http://0.0.0.0:8000",
+    "timeout": 300
+  },
+
+  "env": {
+    "env_name": "webshop",
+    "env_server_url": "http://0.0.0.0:8005",
+    "timeout": 3000,
+    "env_config": {
+      "upstream_env_server_base": "http://127.0.0.1:36004",
+      "bootstrap_upstream_env": true,
+      "restart_upstream_env": false,
+      "upstream_launch_module": "env.env_systems.web_shopping_env.runtime.service.launch_lite",
+      "upstream_webshop_data_root": "data/shopping",
+      "upstream_limit_goals": -1,
+      "upstream_ready_timeout": 6000,
+      "reuse_env": true,
+      "env_id_cache_file": ".env_id_cache_{port}_memoryarena_shopping.json",
+      "clear_env_id_cache_on_restart": true,
+      "clear_python_cache_on_restart": false,
+      "upstream_log_file": "logs/upstream_webshop_{port}.log",
+      "action_format": "react",
+      "enable_feedback": false
+    }
+  },
+
+  "task_specific": {
+    "task_category": "all",
+    "task_file_limit": 10,
+    "max_steps": 20,
+    "split_steps": true,
+    "resume": true,
+    "include_history": false
+  },
+
+  "output": {
+    "output_dir": "results/shopping",
+    "save_trajectories": true,
+    "save_metrics": true,
+    "save_interactions": true
+  }
+}

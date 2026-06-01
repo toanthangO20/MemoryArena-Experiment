@@ -1,0 +1,33 @@
+{
+  "task_name": "travel_planner",
+
+  "agent": {
+    "model_name": "gemini-3-flash-preview",
+    "backend": "gemini",
+    "api_key": "<GOOGLE_API_KEY>"
+  },
+
+  "memory": {
+    "use_step_memory": false,
+    "memory_system_name": "long_context",
+    "server_url": "http://0.0.0.0:8000"
+  },
+
+  "env": {
+    "env_name": "travel_planner",
+    "env_server_url": "http://0.0.0.0:8005",
+    "env_config": {
+      "judgement_mode": "none"
+    }
+  },
+
+  "task_specific": {
+    "max_steps": 30
+  },
+
+  "output": {
+    "output_dir": "results/travel/long_context/gemini-3-flash-preview",
+    "log_dir": "results/travel/logs",
+    "global_csv": "results/travel/results.csv"
+  }
+}

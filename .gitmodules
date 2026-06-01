@@ -1,0 +1,3 @@
+[submodule "MemActBench"]
+	path = MemActBench
+	url = https://github.com/wangyu-ustc/MemActBench.git

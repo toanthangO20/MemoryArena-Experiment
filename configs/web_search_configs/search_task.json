@@ -1,0 +1,40 @@
+{
+  "task_name": "search",
+  "description": "Web search task with memory system",
+  
+  "agent": {
+    "model_name": "gpt-5-mini",
+    "embedding_model": "text-embedding-3-small",
+    "max_iterations": 35,
+    "provider": null
+  },
+
+  "memory": {
+    "use_step_memory": false,
+    "memory_system_name": "mirix",
+    "memory_url": "http://0.0.0.0:8000",
+    "no_memory": false
+  },
+
+  "env": {
+    "env_server_url": "http://0.0.0.0:8001",
+    "script_path": null,
+    "timeout": 3000,
+    "index_path": "env/env_systems/web_search_env/embeddings/shard*.index",
+    "corpus_path": "web_search_env/data/corpus.jsonl",
+    "mcp_url": null,
+    "mcp_name": "retrieval-mcp-server"
+  },
+
+  "task_specific": {
+    "query_ids": ["116"],
+    "store_eval_in_memory": false,
+    "data_dir": "env/env_systems/web_search_env/data",
+    "qrel_evidence": "topics-qrels/qrel_evidence.txt",
+    "judge_model": "gpt-4.1"
+  },
+
+  "output": {
+    "output_dir": "results/web_search/mirix_gpt5mini"
+  }
+}

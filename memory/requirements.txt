@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+tiktoken
+mirix
+mem0ai
+letta-client
+# MemoRAG
+semantic_text_splitter
+faiss-cpu
+torch
+# GraphRAG
+langchain-core
+langchain-openai
+langchain-graph-retriever

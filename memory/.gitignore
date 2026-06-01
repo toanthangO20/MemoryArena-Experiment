@@ -1,0 +1,7 @@
+__pycache__
+.pytest_cache
+.env
+graphrag_data
+legacy
+lightmem_data
+reasoningbank_data

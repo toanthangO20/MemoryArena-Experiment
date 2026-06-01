@@ -22,3 +22,8 @@ results/
 logs/
 data/
 hf_task_cache/
+
+# Local Kaggle EDA outputs and downloaded run artifacts
+artifacts/
+memoryarena_eda_outputs/
+memoryarena_eda_outputs.zip

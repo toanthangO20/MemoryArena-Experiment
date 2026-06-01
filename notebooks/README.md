@@ -47,3 +47,20 @@ Main outputs:
 
 The proxy difficulty score in the notebook is a transparent heuristic for EDA, not an official MemoryArena metric.
 
+## Local Artifact Layout
+
+Downloaded Kaggle outputs should be kept outside tracked source files:
+
+```text
+artifacts/
+  memoryarena_eda/
+    kaggle_run_YYYY-MM-DD/
+      memoryarena_eda_outputs.zip
+      memoryarena_eda_outputs/
+        EDA_REPORT.md
+        tables/
+        figures/
+      kaggle_memoryarena_eda_executed.ipynb
+```
+
+The `artifacts/` directory is ignored by Git so large generated CSV, PNG, HTML, and executed-notebook files do not bloat the repository.

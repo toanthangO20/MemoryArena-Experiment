@@ -133,6 +133,76 @@
       gap: 18px;
     }
     .small { color: var(--muted); font-size: 13px; }
+
+    .insight-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 12px;
+      margin: 18px 0 24px;
+    }
+    .insight {
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--accent-2);
+      border-radius: 8px;
+      padding: 14px;
+    }
+    .insight strong {
+      color: var(--accent-2);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .figure-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 18px;
+      margin: 18px 0 26px;
+    }
+    figure.chart {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      margin: 0;
+      overflow: hidden;
+      background: #fff;
+    }
+    figure.chart.wide {
+      grid-column: 1 / -1;
+    }
+    figure.chart img {
+      display: block;
+      width: 100%;
+      height: auto;
+      background: #fff;
+    }
+    figcaption {
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+      padding: 10px 12px;
+    }
+    .mini-bars {
+      display: grid;
+      gap: 8px;
+      margin: 12px 0 18px;
+    }
+    .bar-row {
+      display: grid;
+      grid-template-columns: 190px 1fr 60px;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+    .bar-track {
+      background: #e5e7eb;
+      border-radius: 999px;
+      height: 12px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      background: var(--accent);
+      height: 100%;
+    }
+
     @media (max-width: 760px) {
       article { padding: 22px; }
       .two-col { grid-template-columns: 1fr; }
@@ -176,6 +246,34 @@
     <code>progressive_search</code> thể hiện rõ bài toán tích lũy ràng buộc qua nhiều câu hỏi trung gian.
   </p>
 
+  <h2>Dashboard h&#236;nh &#7843;nh nhanh</h2>
+  <p>
+    C&#225;c h&#236;nh d&#432;&#7899;i &#273;&#226;y l&#224; nh&#7919;ng chart quan tr&#7885;ng nh&#7845;t &#273;&#432;&#7907;c ch&#7885;n t&#7915; notebook Kaggle. M&#7909;c ti&#234;u l&#224; nh&#236;n nhanh &#273;&#432;&#7907;c ba chi&#7873;u: quy m&#244; d&#7919; li&#7879;u, &#273;&#7897; kh&#243; t&#432;&#417;ng &#273;&#7889;i v&#224; ki&#7875;u memory pressure c&#7911;a t&#7915;ng subset.
+  </p>
+  <div class="figure-grid">
+    <figure class="chart">
+      <img src="assets/memoryarena_eda/01_record_count_by_subset.png" alt="Record count by subset">
+      <figcaption>Quy m&#244; task theo subset: travel v&#224; progressive search chi&#7871;m ph&#7847;n l&#7899;n s&#7889; task.</figcaption>
+    </figure>
+    <figure class="chart">
+      <img src="assets/memoryarena_eda/39_difficulty_average_by_subset.png" alt="Average proxy difficulty by subset">
+      <figcaption>Proxy difficulty trung b&#236;nh: travel, shopping v&#224; formal math l&#224; ba nh&#243;m n&#7863;ng nh&#7845;t.</figcaption>
+    </figure>
+    <figure class="chart wide">
+      <img src="assets/memoryarena_eda/43_memory_unit_stacked_bar.png" alt="Stacked memory unit types by subset">
+      <figcaption>Memory-unit mix cho th&#7845;y benchmark c&#7847;n nhi&#7873;u c&#417; ch&#7871; memory kh&#225;c nhau, kh&#244;ng ch&#7881; m&#7897;t vector store chung.</figcaption>
+    </figure>
+  </div>
+
+  <div class="insight-grid">
+    <div class="insight"><strong>Travel = graph memory</strong>7.550 relational edges v&#224; 12.583 preference/constraint memory units.</div>
+    <div class="insight"><strong>Shopping = structured memory</strong>900 answers, 694 unique ASINs, 4.720 attribute memory units.</div>
+    <div class="insight"><strong>Formal math = symbolic context</strong>Mean 7.516,8 tokens/task v&#224; background trung b&#236;nh 5.302,9 tokens/task.</div>
+    <div class="insight"><strong>Progressive = constraint chain</strong>C&#226;u cu&#7889;i trung b&#236;nh 122,4 tokens, c&#226;u trung gian 29,0 tokens.</div>
+  </div>
+
+
+
   <h2>2. Phạm vi dữ liệu và chất lượng schema</h2>
   <table>
     <thead>
@@ -196,6 +294,18 @@
       <tr><td><code>formal_reasoning_phys</code></td><td class="num">20</td><td class="num">86</td><td class="num">4,300</td><td class="num">1.238,0</td><td class="num">0</td></tr>
     </tbody>
   </table>
+
+
+  <div class="figure-grid">
+    <figure class="chart">
+      <img src="assets/memoryarena_eda/02_field_availability_heatmap.png" alt="Field availability heatmap">
+      <figcaption>Field availability x&#225;c nh&#7853;n missingness l&#224; theo thi&#7871;t k&#7871; subset, kh&#244;ng ph&#7843;i l&#7895;i d&#7919; li&#7879;u.</figcaption>
+    </figure>
+    <figure class="chart">
+      <img src="assets/memoryarena_eda/05_box_num_subtasks_by_subset.png" alt="Number of subtasks boxplot">
+      <figcaption>Formal math v&#224; progressive search c&#243; tail d&#224;i v&#7873; s&#7889; subtask; shopping c&#7889; &#273;&#7883;nh 6 b&#432;&#7899;c.</figcaption>
+    </figure>
+  </div>
 
   <div class="note success">
     <strong>Nhận xét chất lượng dữ liệu:</strong>
@@ -231,6 +341,18 @@
       <tr><td class="rank">5</td><td><code>formal_reasoning_phys</code></td><td class="num">0,0807</td><td class="num">0,0666</td><td>Ít task hơn, ít subtask hơn và context nhẹ hơn formal math.</td></tr>
     </tbody>
   </table>
+  <div class="figure-grid">
+    <figure class="chart">
+      <img src="assets/memoryarena_eda/38_difficulty_boxplot_by_subset.png" alt="Difficulty boxplot by subset">
+      <figcaption>Boxplot cho th&#7845;y travel v&#224; shopping c&#243; difficulty &#7893;n &#273;&#7883;nh cao; formal math c&#243; nhi&#7873;u outlier.</figcaption>
+    </figure>
+    <figure class="chart">
+      <img src="assets/memoryarena_eda/39_difficulty_average_by_subset.png" alt="Average difficulty by subset">
+      <figcaption>X&#7871;p h&#7841;ng difficulty trung b&#236;nh: travel &#273;&#7913;ng &#273;&#7847;u, shopping s&#225;t ngay sau.</figcaption>
+    </figure>
+  </div>
+
+
 
   <h2>4. Phân tích token và độ dài context</h2>
   <table>
@@ -259,6 +381,30 @@
     và đều hơn, còn answer ngắn nhưng có cấu trúc cao. <code>progressive_search</code> có answer dài vì answer chứa
     phần giải thích/search evidence, nhưng question trung gian rất ngắn.
   </p>
+
+
+  <div class="figure-grid">
+    <figure class="chart">
+      <img src="assets/memoryarena_eda/07_box_question_tokens.png" alt="Question token length by subset">
+      <figcaption>Shopping c&#243; question d&#224;i v&#224; &#273;&#7873;u; progressive c&#243; intermediate question ng&#7855;n.</figcaption>
+    </figure>
+    <figure class="chart">
+      <img src="assets/memoryarena_eda/09_box_answer_tokens.png" alt="Answer token length by subset">
+      <figcaption>Travel v&#224; progressive c&#243; answer d&#224;i v&#236; ch&#7913;a itinerary/evidence text.</figcaption>
+    </figure>
+    <figure class="chart">
+      <img src="assets/memoryarena_eda/11_box_background_tokens.png" alt="Background token length by subset">
+      <figcaption>Background ch&#7881; &#273;&#225;ng k&#7875; &#7903; formal reasoning, &#273;&#7863;c bi&#7879;t formal math.</figcaption>
+    </figure>
+    <figure class="chart">
+      <img src="assets/memoryarena_eda/13_avg_cumulative_context_tokens.png" alt="Average cumulative context tokens">
+      <figcaption>Context t&#237;ch l&#361;y t&#259;ng m&#7841;nh nh&#7845;t &#7903; formal math v&#224; travel.</figcaption>
+    </figure>
+    <figure class="chart wide">
+      <img src="assets/memoryarena_eda/14_task_subtask_question_token_heatmap.png" alt="Task subtask question token heatmap">
+      <figcaption>Heatmap top token-heavy tasks cho th&#7845;y m&#7897;t s&#7889; task/subtask t&#7841;o spike context r&#245; r&#7879;t.</figcaption>
+    </figure>
+  </div>
 
   <h2>5. Subset: bundled_shopping</h2>
   <div class="two-col">
@@ -297,6 +443,18 @@
     </span>
   </div>
 
+
+  <div class="figure-grid">
+    <figure class="chart">
+      <img src="assets/memoryarena_eda/18_shopping_top_attributes.png" alt="Top shopping attributes">
+      <figcaption>Top attributes cho th&#7845;y memory c&#7847;n gi&#7919; c&#225;c thu&#7897;c t&#237;nh s&#7843;n ph&#7849;m c&#7909; th&#7875;, kh&#244;ng ch&#7881; m&#244; t&#7843; chung.</figcaption>
+    </figure>
+    <figure class="chart">
+      <img src="assets/memoryarena_eda/20_shopping_attribute_cooccurrence_network.png" alt="Shopping attribute co-occurrence network">
+      <figcaption>Attribute co-occurrence network g&#7907;i &#253; c&#225;ch x&#226;y memory d&#7841;ng graph/key-value cho compatibility.</figcaption>
+    </figure>
+  </div>
+
   <h2>6. Subset: progressive_search</h2>
   <table>
     <thead>
@@ -326,6 +484,18 @@
       <code>unique_answer_count</code> hiện đếm raw answer string, mà answer thường dài và chứa explanation. Cần
       canonicalize entity/candidate answer để đo “unique intermediate results” chính xác hơn.
     </span>
+  </div>
+
+
+  <div class="figure-grid">
+    <figure class="chart">
+      <img src="assets/memoryarena_eda/24_progressive_cumulative_constraints.png" alt="Progressive cumulative constraints">
+      <figcaption>Constraint keyword t&#237;ch l&#361;y theo subtask index, &#273;&#250;ng b&#7843;n ch&#7845;t multi-hop progressive search.</figcaption>
+    </figure>
+    <figure class="chart">
+      <img src="assets/memoryarena_eda/25_progressive_final_vs_intermediate_tokens.png" alt="Final vs intermediate question token length">
+      <figcaption>C&#226;u final d&#224;i h&#417;n r&#245; r&#7879;t so v&#7899;i c&#226;u trung gian, v&#236; n&#243; gom l&#7841;i nhi&#7873;u &#273;i&#7873;u ki&#7879;n tr&#432;&#7899;c &#273;&#243;.</figcaption>
+    </figure>
   </div>
 
   <h2>7. Subset: group_travel_planner</h2>
@@ -370,6 +540,22 @@
       merge nhầm các tên người phổ biến giữa các task khác nhau.
     </span>
   </div>
+  <div class="figure-grid">
+    <figure class="chart">
+      <img src="assets/memoryarena_eda/29_travel_constraint_keywords.png" alt="Travel constraint keywords">
+      <figcaption>Constraint t&#7853;p trung v&#224;o accommodation, dinner, rating, breakfast, lunch v&#224; cuisine.</figcaption>
+    </figure>
+    <figure class="chart">
+      <img src="assets/memoryarena_eda/30_travel_slot_keywords.png" alt="Travel slot keyword frequency">
+      <figcaption>Slot-level memory ch&#7911; y&#7871;u xoay quanh accommodation v&#224; c&#225;c b&#7919;a &#259;n.</figcaption>
+    </figure>
+    <figure class="chart wide">
+      <img src="assets/memoryarena_eda/31_travel_dependency_graph.png" alt="Travel dependency graph">
+      <figcaption>Dependency graph minh h&#7885;a &#225;p l&#7921;c entity-relation; b&#7843;n aggregate c&#7847;n namespace theo task &#273;&#7875; ph&#226;n t&#237;ch s&#226;u h&#417;n.</figcaption>
+    </figure>
+  </div>
+
+
 
   <h2>8. Subset: formal_reasoning_math và formal_reasoning_phys</h2>
   <table>
@@ -410,6 +596,22 @@
     </span>
   </div>
 
+
+  <div class="figure-grid">
+    <figure class="chart">
+      <img src="assets/memoryarena_eda/34_formal_tokens_by_subtask_index.png" alt="Formal tokens by subtask index">
+      <figcaption>Formal reasoning c&#243; background/question/answer token bi&#7871;n thi&#234;n theo subtask, n&#7893;i b&#7853;t &#7903; formal math.</figcaption>
+    </figure>
+    <figure class="chart">
+      <img src="assets/memoryarena_eda/35_formal_top_latex_symbols.png" alt="Top LaTeX symbols">
+      <figcaption>Top raw symbols hi&#7879;n v&#7851;n c&#243; boilerplate LaTeX; &#273;&#226;y l&#224; insight v&#7873; b&#432;&#7899;c cleaning ti&#7871;p theo.</figcaption>
+    </figure>
+    <figure class="chart wide">
+      <img src="assets/memoryarena_eda/36_formal_notation_reuse_heatmap.png" alt="Formal notation reuse heatmap">
+      <figcaption>Notation reuse heatmap cho th&#7845;y k&#253; hi&#7879;u/term &#273;&#432;&#7907;c t&#225;i s&#7917; d&#7909;ng qua c&#225;c subtask trong c&#249;ng task.</figcaption>
+    </figure>
+  </div>
+
   <h2>9. Memory unit analysis</h2>
   <table>
     <thead>
@@ -442,6 +644,18 @@
     relation tracking, shopping cần schema/key-value, formal cần symbolic context, còn progressive search cần stateful
     constraint accumulator.
   </p>
+  <div class="figure-grid">
+    <figure class="chart">
+      <img src="assets/memoryarena_eda/43_memory_unit_stacked_bar.png" alt="Memory unit stacked bar">
+      <figcaption>Stacked bar cho th&#7845;y m&#7895;i subset c&#7847;n lo&#7841;i memory unit kh&#225;c nhau.</figcaption>
+    </figure>
+    <figure class="chart">
+      <img src="assets/memoryarena_eda/44_memory_units_timeline.png" alt="Memory unit timeline">
+      <figcaption>Timeline memory unit theo subtask index gi&#250;p th&#7845;y memory pressure t&#259;ng/gi&#7843;m trong chu&#7895;i session.</figcaption>
+    </figure>
+  </div>
+
+
 
   <h2>10. Hạn chế của EDA hiện tại</h2>
   <ul>

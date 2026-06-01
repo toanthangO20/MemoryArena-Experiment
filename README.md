@@ -1,8 +1,8 @@
 # MemoryArena-Experiment
 
-Experimental workspace derived from the local MemoryArena repository.
+Experimental workspace derived from the MemoryArena project.
 
-Reference source repo: `D:\Projects\MemoryArena`.
+Code reference: this project references and adapts code from [ZexueHe/MemoryArena](https://github.com/ZexueHe/MemoryArena).
 
 This project keeps the same high-level structure and components as the source repo so experiments can be developed separately without modifying the original checkout.
 

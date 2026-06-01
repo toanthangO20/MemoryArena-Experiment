@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Báo cáo EDA MemoryArena</title>
+  <style>
+    :root {
+      --bg: #f7f8fb;
+      --paper: #ffffff;
+      --ink: #1f2937;
+      --muted: #5b6575;
+      --line: #d9dee8;
+      --accent: #155e75;
+      --accent-2: #7c2d12;
+      --good: #166534;
+      --warn: #92400e;
+      --code: #f1f5f9;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.55;
+    }
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 32px 20px 56px;
+    }
+    article {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 34px;
+    }
+    h1, h2, h3 {
+      line-height: 1.25;
+      margin: 0 0 14px;
+    }
+    h1 {
+      color: var(--accent);
+      font-size: 34px;
+      margin-bottom: 8px;
+    }
+    h2 {
+      border-top: 1px solid var(--line);
+      color: var(--accent);
+      font-size: 24px;
+      margin-top: 34px;
+      padding-top: 24px;
+    }
+    h3 {
+      color: #334155;
+      font-size: 18px;
+      margin-top: 22px;
+    }
+    p { margin: 10px 0; }
+    ul { padding-left: 22px; }
+    li { margin: 6px 0; }
+    code {
+      background: var(--code);
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.95em;
+    }
+    .subtitle {
+      color: var(--muted);
+      margin-bottom: 22px;
+    }
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+      margin: 22px 0;
+    }
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 12px;
+      margin: 18px 0;
+    }
+    .metric, .note {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      background: #fbfcfe;
+    }
+    .metric strong {
+      display: block;
+      color: var(--accent);
+      font-size: 22px;
+      margin-bottom: 2px;
+    }
+    .metric span, .note span {
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .note {
+      border-left: 4px solid var(--accent);
+      margin: 16px 0;
+    }
+    .warning { border-left-color: var(--warn); }
+    .success { border-left-color: var(--good); }
+    table {
+      border-collapse: collapse;
+      margin: 16px 0 22px;
+      width: 100%;
+      font-size: 14px;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 9px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: #eef3f8;
+      color: #243244;
+      font-weight: 700;
+    }
+    td.num, th.num { text-align: right; }
+    .rank {
+      color: var(--accent-2);
+      font-weight: 700;
+    }
+    .two-col {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 18px;
+    }
+    .small { color: var(--muted); font-size: 13px; }
+    @media (max-width: 760px) {
+      article { padding: 22px; }
+      .two-col { grid-template-columns: 1fr; }
+      table { font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+<article>
+  <h1>Báo cáo EDA MemoryArena</h1>
+  <p class="subtitle">
+    Báo cáo tiếng Việt từ kết quả notebook Kaggle EDA cho benchmark MemoryArena.
+    Dữ liệu được tải trực tiếp từ Hugging Face dataset <code>ZexueHe/memoryarena</code>.
+  </p>
+
+  <div class="meta">
+    <div class="note"><strong>Ngày chạy artifact:</strong><br><span>01/06/2026</span></div>
+    <div class="note"><strong>Notebook:</strong><br><span><code>notebooks/kaggle_memoryarena_eda.ipynb</code></span></div>
+    <div class="note"><strong>Artifact local:</strong><br><span><code>artifacts/memoryarena_eda/kaggle_run_2026-06-01/</code></span></div>
+  </div>
+
+  <h2>1. Tóm tắt điều hành</h2>
+  <p>
+    MemoryArena trong lần chạy này gồm 5 subset với 701 task và 4.850 subtask. Các kiểm tra schema cơ bản đều tốt:
+    không có task nào bị lệch số lượng <code>questions</code> và <code>answers</code>. Điều này cho phép dùng trực tiếp
+    các bảng chuẩn hóa task-level và subtask-level để phân tích memory pressure.
+  </p>
+
+  <div class="metric-grid">
+    <div class="metric"><strong>701</strong><span>tổng số task</span></div>
+    <div class="metric"><strong>4.850</strong><span>tổng số subtask/session</span></div>
+    <div class="metric"><strong>0</strong><span>schema-invalid task</span></div>
+    <div class="metric"><strong>45.668</strong><span>memory units heuristic</span></div>
+  </div>
+
+  <p>
+    Kết quả nổi bật nhất là mỗi subset tạo ra một kiểu áp lực bộ nhớ khác nhau. <code>group_travel_planner</code>
+    mạnh nhất về quan hệ giữa người và constraint theo lịch trình; <code>bundled_shopping</code> mạnh về cấu trúc
+    key-value/attribute; <code>formal_reasoning_math</code> nặng nhất về độ dài context và background ký hiệu;
+    <code>progressive_search</code> thể hiện rõ bài toán tích lũy ràng buộc qua nhiều câu hỏi trung gian.
+  </p>
+
+  <h2>2. Phạm vi dữ liệu và chất lượng schema</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Subset</th>
+        <th class="num">Tasks</th>
+        <th class="num">Subtasks</th>
+        <th class="num">Avg questions/task</th>
+        <th class="num">Median total tokens</th>
+        <th class="num">Invalid schema</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><code>bundled_shopping</code></td><td class="num">150</td><td class="num">900</td><td class="num">6,000</td><td class="num">2.453,5</td><td class="num">0</td></tr>
+      <tr><td><code>progressive_search</code></td><td class="num">221</td><td class="num">1.641</td><td class="num">7,425</td><td class="num">3.741,0</td><td class="num">0</td></tr>
+      <tr><td><code>group_travel_planner</code></td><td class="num">270</td><td class="num">1.869</td><td class="num">6,922</td><td class="num">5.799,5</td><td class="num">0</td></tr>
+      <tr><td><code>formal_reasoning_math</code></td><td class="num">40</td><td class="num">354</td><td class="num">8,850</td><td class="num">7.214,5</td><td class="num">0</td></tr>
+      <tr><td><code>formal_reasoning_phys</code></td><td class="num">20</td><td class="num">86</td><td class="num">4,300</td><td class="num">1.238,0</td><td class="num">0</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note success">
+    <strong>Nhận xét chất lượng dữ liệu:</strong>
+    <span>
+      Các field chính <code>questions</code> và <code>answers</code> hiện diện 100% ở cả 5 subset.
+      <code>backgrounds</code> chỉ xuất hiện ở formal reasoning, <code>base_person</code> chỉ xuất hiện ở travel planner,
+      và <code>category</code> chỉ xuất hiện ở shopping. Đây là missingness theo thiết kế, không phải lỗi dữ liệu.
+    </span>
+  </div>
+
+  <h2>3. Proxy difficulty score</h2>
+  <p>
+    Difficulty score được tính từ các feature đã chuẩn hóa: số câu hỏi, tổng token của question/answer/background,
+    độ phức tạp cấu trúc answer, số constraint keyword, số entity/attribute và số dependency reference.
+    Đây là chỉ báo EDA để so sánh tương đối, không phải metric chính thức của MemoryArena.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Subset</th>
+        <th class="num">Avg difficulty</th>
+        <th class="num">Median difficulty</th>
+        <th>Nguyên nhân chính</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="rank">1</td><td><code>group_travel_planner</code></td><td class="num">0,3137</td><td class="num">0,3029</td><td>Nhiều quan hệ liên người, nhiều constraint lịch trình và answer dài.</td></tr>
+      <tr><td class="rank">2</td><td><code>bundled_shopping</code></td><td class="num">0,3086</td><td class="num">0,3076</td><td>Constraint keyword rất dày, nhiều attribute và ASIN cần lưu chính xác.</td></tr>
+      <tr><td class="rank">3</td><td><code>formal_reasoning_math</code></td><td class="num">0,2795</td><td class="num">0,2732</td><td>Background dài, nhiều ký hiệu, nhiều subtask/task.</td></tr>
+      <tr><td class="rank">4</td><td><code>progressive_search</code></td><td class="num">0,1484</td><td class="num">0,1341</td><td>Áp lực nằm ở tích lũy constraint, ít dependency/entity hơn travel.</td></tr>
+      <tr><td class="rank">5</td><td><code>formal_reasoning_phys</code></td><td class="num">0,0807</td><td class="num">0,0666</td><td>Ít task hơn, ít subtask hơn và context nhẹ hơn formal math.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>4. Phân tích token và độ dài context</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Subset</th>
+        <th class="num">Mean total tokens/task</th>
+        <th class="num">Max total tokens/task</th>
+        <th class="num">Median question tokens/subtask</th>
+        <th class="num">Median answer tokens/subtask</th>
+        <th class="num">P90 background tokens/subtask</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><code>formal_reasoning_math</code></td><td class="num">7.516,8</td><td class="num">13.472</td><td class="num">122,0</td><td class="num">67,0</td><td class="num">1.998,4</td></tr>
+      <tr><td><code>group_travel_planner</code></td><td class="num">5.758,1</td><td class="num">10.553</td><td class="num">208,0</td><td class="num">617,0</td><td class="num">0,0</td></tr>
+      <tr><td><code>progressive_search</code></td><td class="num">3.975,4</td><td class="num">9.681</td><td class="num">29,0</td><td class="num">492,0</td><td class="num">0,0</td></tr>
+      <tr><td><code>bundled_shopping</code></td><td class="num">2.473,2</td><td class="num">2.943</td><td class="num">372,0</td><td class="num">41,0</td><td class="num">0,0</td></tr>
+      <tr><td><code>formal_reasoning_phys</code></td><td class="num">1.582,2</td><td class="num">3.635</td><td class="num">80,5</td><td class="num">48,0</td><td class="num">723,0</td></tr>
+    </tbody>
+  </table>
+
+  <p>
+    <code>formal_reasoning_math</code> là subset nặng nhất theo token tổng và background, trong khi
+    <code>group_travel_planner</code> nặng do answer dài theo itinerary. <code>bundled_shopping</code> có question dài
+    và đều hơn, còn answer ngắn nhưng có cấu trúc cao. <code>progressive_search</code> có answer dài vì answer chứa
+    phần giải thích/search evidence, nhưng question trung gian rất ngắn.
+  </p>
+
+  <h2>5. Subset: bundled_shopping</h2>
+  <div class="two-col">
+    <div>
+      <h3>Thống kê chính</h3>
+      <ul>
+        <li>150 task, 900 subtask, đúng 6 product steps/task.</li>
+        <li>900 shopping answers, 694 unique ASIN.</li>
+        <li>Trung bình 5,24 attributes/answer; median 6 attributes; max 8 attributes.</li>
+        <li>Average difficulty: 0,3086, đứng thứ hai toàn benchmark.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Top attributes</h3>
+      <ul>
+        <li><code>niacinamide</code>: 32</li>
+        <li><code>silicone</code>: 29</li>
+        <li><code>gold</code>: 28</li>
+        <li><code>surge protector</code>: 28</li>
+        <li><code>vegan</code>: 27</li>
+        <li><code>4k</code>: 26</li>
+      </ul>
+    </div>
+  </div>
+  <p>
+    Shopping là dạng memory có cấu trúc rõ nhất. Agent không chỉ cần nhớ câu hỏi hiện tại, mà còn cần giữ lại lựa chọn
+    ground-truth trước đó, thuộc tính kỹ thuật, compatibility note, budget và thứ tự mua hàng. Với kiểu task này,
+    memory dạng document thuần túy thường kém hiệu quả hơn memory dạng bảng hoặc key-value schema.
+  </p>
+  <div class="note">
+    <strong>Khuyến nghị memory:</strong>
+    <span>
+      Lưu mỗi product step thành record gồm <code>task_id</code>, <code>subtask_idx</code>, <code>target_asin</code>,
+      <code>attributes</code>, constraint tương thích, budget và ranking preference. Retrieval nên ưu tiên exact key,
+      filter theo step trước đó và attribute overlap.
+    </span>
+  </div>
+
+  <h2>6. Subset: progressive_search</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Chỉ số</th>
+        <th class="num">Giá trị</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Tasks</td><td class="num">221</td></tr>
+      <tr><td>Mean subqueries/task</td><td class="num">7,43</td></tr>
+      <tr><td>Max subqueries/task</td><td class="num">16</td></tr>
+      <tr><td>Mean final question tokens</td><td class="num">122,4</td></tr>
+      <tr><td>Mean intermediate question tokens</td><td class="num">29,0</td></tr>
+      <tr><td>Task có all intermediate answers same</td><td class="num">0</td></tr>
+    </tbody>
+  </table>
+  <p>
+    Progressive search thể hiện rõ pattern “final question expansion”: câu cuối tổng hợp nhiều ràng buộc từ các bước
+    trước và dài hơn khoảng 4 lần so với câu trung gian. Pattern câu cuối phổ biến gồm <code>as of</code>,
+    <code>what is the</code> và một số trường hợp <code>what is the full name</code>. Đây là bài toán cần memory theo
+    chuỗi constraint hơn là chỉ retrieval câu gần nhất.
+  </p>
+  <div class="note warning">
+    <strong>Lưu ý phân tích:</strong>
+    <span>
+      <code>unique_answer_count</code> hiện đếm raw answer string, mà answer thường dài và chứa explanation. Cần
+      canonicalize entity/candidate answer để đo “unique intermediate results” chính xác hơn.
+    </span>
+  </div>
+
+  <h2>7. Subset: group_travel_planner</h2>
+  <p>
+    Đây là subset có proxy difficulty cao nhất. Mỗi task có base traveler và nhiều traveler phát sinh, với các yêu cầu
+    phụ thuộc vào lịch trình, nhà hàng, chỗ ở và người đi cùng trước đó.
+  </p>
+  <div class="metric-grid">
+    <div class="metric"><strong>270</strong><span>tasks</span></div>
+    <div class="metric"><strong>7,92</strong><span>travelers/task trung bình</span></div>
+    <div class="metric"><strong>7.550</strong><span>dependency edges</span></div>
+    <div class="metric"><strong>22.272</strong><span>memory units</span></div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Keyword constraint</th>
+        <th class="num">Count</th>
+        <th>Ý nghĩa memory</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><code>accommodation</code></td><td class="num">4.501</td><td>Ràng buộc chỗ ở và sharing room.</td></tr>
+      <tr><td><code>dinner</code></td><td class="num">3.946</td><td>Slot ăn tối thay đổi theo ngày/người.</td></tr>
+      <tr><td><code>rating</code></td><td class="num">3.812</td><td>Preference định lượng cần giữ chính xác.</td></tr>
+      <tr><td><code>breakfast</code></td><td class="num">3.596</td><td>Slot ăn sáng theo ngày.</td></tr>
+      <tr><td><code>lunch</code></td><td class="num">3.327</td><td>Slot ăn trưa theo ngày.</td></tr>
+      <tr><td><code>cuisine</code></td><td class="num">2.126</td><td>Preference loại món/nhà hàng.</td></tr>
+    </tbody>
+  </table>
+
+  <p>
+    Trip days phân bổ đều: 90 task cho 3 ngày, 90 task cho 5 ngày và 90 task cho 7 ngày. Điều này hữu ích cho benchmark:
+    nó tách tương đối rõ áp lực do số traveler/constraint khỏi áp lực do số ngày.
+  </p>
+  <div class="note">
+    <strong>Khuyến nghị memory:</strong>
+    <span>
+      Dùng entity-relation graph với node <code>person</code>, <code>day</code>, <code>slot</code>,
+      <code>restaurant</code>, <code>accommodation</code>. Edge nên có namespace theo <code>task_id</code> để tránh
+      merge nhầm các tên người phổ biến giữa các task khác nhau.
+    </span>
+  </div>
+
+  <h2>8. Subset: formal_reasoning_math và formal_reasoning_phys</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Subset</th>
+        <th class="num">Tasks</th>
+        <th class="num">Papers</th>
+        <th class="num">Avg subtasks</th>
+        <th class="num">Avg total tokens</th>
+        <th class="num">Avg background tokens</th>
+        <th class="num">Avg difficulty</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><code>formal_reasoning_math</code></td><td class="num">40</td><td class="num">40</td><td class="num">8,85</td><td class="num">7.516,82</td><td class="num">5.302,88</td><td class="num">0,28</td></tr>
+      <tr><td><code>formal_reasoning_phys</code></td><td class="num">20</td><td class="num">20</td><td class="num">4,30</td><td class="num">1.582,20</td><td class="num">836,65</td><td class="num">0,08</td></tr>
+    </tbody>
+  </table>
+
+  <p>
+    Formal math nặng hơn formal physics ở hầu hết chiều: số subtask, tổng token, background token và số ký hiệu.
+    Các outlier lớn nhất đều thuộc formal math, ví dụ task <code>id=21</code> có 13.472 total tokens và
+    task <code>id=8</code> có proxy difficulty 0,525. Answer structure cũng chủ yếu là formula-heavy:
+    formal math có 24 task <code>list_of_formula_heavy</code> và 16 task <code>mixed_list</code>.
+  </p>
+  <p>
+    Top symbol raw hiện bị chi phối bởi macro/boilerplate LaTeX như <code>\newcommand</code>, <code>\def</code>,
+    <code>\begin</code>, <code>\end</code>, bên cạnh các ký hiệu thật như <code>\mu</code>, <code>\frac</code>,
+    <code>\mathcal</code>, <code>\pi</code>, <code>\delta</code>, <code>\sum</code>. Vì vậy kết quả notation reuse
+    cần thêm bước lọc boilerplate trước khi dùng cho phân tích khoa học.
+  </p>
+  <div class="note">
+    <strong>Khuyến nghị memory:</strong>
+    <span>
+      Dùng symbolic memory gồm dictionary notation, background/definition store và intermediate lemma/result store.
+      Retrieval nên kết hợp tên paper, subtask index, ký hiệu xuất hiện trong question và các định nghĩa liên quan.
+    </span>
+  </div>
+
+  <h2>9. Memory unit analysis</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Subset</th>
+        <th>Memory type</th>
+        <th class="num">Count</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><code>group_travel_planner</code></td><td><code>preference_constraint_memory</code></td><td class="num">12.583</td></tr>
+      <tr><td><code>group_travel_planner</code></td><td><code>relational_memory</code></td><td class="num">7.550</td></tr>
+      <tr><td><code>group_travel_planner</code></td><td><code>entity_memory</code></td><td class="num">2.139</td></tr>
+      <tr><td><code>bundled_shopping</code></td><td><code>preference_constraint_memory</code></td><td class="num">5.252</td></tr>
+      <tr><td><code>bundled_shopping</code></td><td><code>attribute_memory</code></td><td class="num">4.720</td></tr>
+      <tr><td><code>bundled_shopping</code></td><td><code>entity_memory</code></td><td class="num">900</td></tr>
+      <tr><td><code>formal_reasoning_math</code></td><td><code>entity_memory</code></td><td class="num">7.029</td></tr>
+      <tr><td><code>formal_reasoning_math</code></td><td><code>intermediate_result_memory</code></td><td class="num">354</td></tr>
+      <tr><td><code>formal_reasoning_math</code></td><td><code>background_definition_memory</code></td><td class="num">112</td></tr>
+      <tr><td><code>progressive_search</code></td><td><code>preference_constraint_memory</code></td><td class="num">2.072</td></tr>
+      <tr><td><code>progressive_search</code></td><td><code>intermediate_result_memory</code></td><td class="num">1.641</td></tr>
+      <tr><td><code>formal_reasoning_phys</code></td><td><code>entity_memory</code></td><td class="num">1.210</td></tr>
+      <tr><td><code>formal_reasoning_phys</code></td><td><code>intermediate_result_memory</code></td><td class="num">86</td></tr>
+      <tr><td><code>formal_reasoning_phys</code></td><td><code>background_definition_memory</code></td><td class="num">20</td></tr>
+    </tbody>
+  </table>
+
+  <p>
+    Memory unit mix xác nhận rằng benchmark không nên được xử lý bằng một cơ chế memory duy nhất. Travel cần graph và
+    relation tracking, shopping cần schema/key-value, formal cần symbolic context, còn progressive search cần stateful
+    constraint accumulator.
+  </p>
+
+  <h2>10. Hạn chế của EDA hiện tại</h2>
+  <ul>
+    <li>Difficulty score chỉ là heuristic; chưa có model run hoặc metric chính thức để validate thứ hạng.</li>
+    <li>Shopping category đang gần như unique theo task, nên chart category distribution chưa có nhiều ý nghĩa nếu chưa gom nhóm semantic.</li>
+    <li>Progressive search chưa canonicalize final entity/candidate answer, làm cho thống kê unique answer bị thô.</li>
+    <li>Formal symbol extraction chưa lọc macro/preamble LaTeX, khiến top symbol raw bị nhiễu.</li>
+    <li>Travel graph aggregate có thể merge nhầm tên người phổ biến giữa các task nếu không namespace node bằng <code>task_id</code>.</li>
+  </ul>
+
+  <h2>11. Đề xuất bước tiếp theo</h2>
+  <ol>
+    <li>Cải thiện notebook bằng bộ lọc LaTeX boilerplate và bảng notation reuse sạch hơn.</li>
+    <li>Thêm canonical entity extraction cho progressive search, tách “candidate answer” khỏi explanation dài.</li>
+    <li>Chuẩn hóa travel graph theo <code>task_id:person_name</code> và thêm graph metrics như degree, connected components, reference depth.</li>
+    <li>Gom nhóm shopping category và attribute bằng normalization nhẹ, ví dụ lowercase, stemming thủ công hoặc embedding cluster.</li>
+    <li>So sánh proxy difficulty với kết quả agent thật để calibrate trọng số difficulty.</li>
+  </ol>
+
+  <h2>12. File nguồn và khả năng commit</h2>
+  <p>
+    Report này được thiết kế để commit được: chỉ chứa HTML/CSS và bảng tóm tắt nhỏ, không nhúng figure PNG/HTML lớn
+    hoặc CSV đầy đủ. Các artifact sinh từ Kaggle được giữ local tại <code>artifacts/</code> và đã được ignore trong Git.
+  </p>
+  <ul>
+    <li>Notebook nguồn: <code>notebooks/kaggle_memoryarena_eda.ipynb</code></li>
+    <li>Helper code: <code>src/memoryarena_eda_utils.py</code></li>
+    <li>Artifact local: <code>artifacts/memoryarena_eda/kaggle_run_2026-06-01/</code></li>
+    <li>Bảng summary local: <code>artifacts/memoryarena_eda/kaggle_run_2026-06-01/memoryarena_eda_outputs/tables/</code></li>
+  </ul>
+
+  <p class="small">
+    Báo cáo được viết từ kết quả Kaggle EDA đã tải về local. Các con số token phụ thuộc tokenizer của notebook
+    tại thời điểm chạy và có thể thay đổi nhẹ nếu đổi tokenizer hoặc logic heuristic.
+  </p>
+</article>
+</main>
+</body>
+</html>

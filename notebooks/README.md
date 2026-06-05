@@ -1,12 +1,12 @@
 # Kaggle MemoryArena EDA Notebook
 
-Notebook: `notebooks/kaggle_memoryarena_eda.ipynb`
+Notebook: `notebooks/EDA/kaggle_memoryarena_eda.ipynb`
 
 ## Run on Kaggle
 
 1. Create a new Kaggle Notebook.
 2. Turn on **Internet** in notebook settings.
-3. Upload or paste `notebooks/kaggle_memoryarena_eda.ipynb`.
+3. Upload or paste `notebooks/EDA/kaggle_memoryarena_eda.ipynb`.
 4. Run all cells.
 
 The notebook does not require any Kaggle Input dataset. It clones this repository into `/kaggle/working/MemoryArena-Experiment` and downloads the MemoryArena dataset directly from Hugging Face with:
